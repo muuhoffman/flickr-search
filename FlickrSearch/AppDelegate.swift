@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        initRootViewController()
+        
         return true
     }
 
@@ -40,7 +42,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 
+extension AppDelegate {
+    func initRootViewController() {
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        
+        let navigationVC = UINavigationController()
+        let initialVC = ViewController()
+        navigationVC.viewControllers = [initialVC]
+        
+        self.window?.rootViewController = navigationVC
+        self.window?.makeKeyAndVisible()        
+    }
+}

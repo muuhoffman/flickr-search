@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		765470771EF969BE00ED20B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470761EF969BE00ED20B7 /* AppDelegate.swift */; };
 		765470791EF969BE00ED20B7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470781EF969BE00ED20B7 /* ViewController.swift */; };
-		7654707C1EF969BE00ED20B7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7654707A1EF969BE00ED20B7 /* Main.storyboard */; };
 		7654707E1EF969BE00ED20B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7654707D1EF969BE00ED20B7 /* Assets.xcassets */; };
 		765470811EF969BE00ED20B7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7654707F1EF969BE00ED20B7 /* LaunchScreen.storyboard */; };
 		7654708C1EF969BE00ED20B7 /* FlickrSearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7654708B1EF969BE00ED20B7 /* FlickrSearchTests.swift */; };
 		765470971EF969BE00ED20B7 /* FlickrSearchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470961EF969BE00ED20B7 /* FlickrSearchUITests.swift */; };
+		765470A51EF96EC300ED20B7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470A41EF96EC300ED20B7 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +37,6 @@
 		765470731EF969BE00ED20B7 /* FlickrSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		765470761EF969BE00ED20B7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		765470781EF969BE00ED20B7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		7654707B1EF969BE00ED20B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7654707D1EF969BE00ED20B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		765470801EF969BE00ED20B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		765470821EF969BE00ED20B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -47,6 +46,7 @@
 		765470921EF969BE00ED20B7 /* FlickrSearchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlickrSearchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		765470961EF969BE00ED20B7 /* FlickrSearchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrSearchUITests.swift; sourceTree = "<group>"; };
 		765470981EF969BE00ED20B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		765470A41EF96EC300ED20B7 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,10 +99,10 @@
 			children = (
 				765470761EF969BE00ED20B7 /* AppDelegate.swift */,
 				765470781EF969BE00ED20B7 /* ViewController.swift */,
-				7654707A1EF969BE00ED20B7 /* Main.storyboard */,
 				7654707D1EF969BE00ED20B7 /* Assets.xcassets */,
 				7654707F1EF969BE00ED20B7 /* LaunchScreen.storyboard */,
 				765470821EF969BE00ED20B7 /* Info.plist */,
+				765470A41EF96EC300ED20B7 /* Constants.swift */,
 			);
 			path = FlickrSearch;
 			sourceTree = "<group>";
@@ -237,7 +237,6 @@
 			files = (
 				765470811EF969BE00ED20B7 /* LaunchScreen.storyboard in Resources */,
 				7654707E1EF969BE00ED20B7 /* Assets.xcassets in Resources */,
-				7654707C1EF969BE00ED20B7 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,6 +263,7 @@
 			files = (
 				765470791EF969BE00ED20B7 /* ViewController.swift in Sources */,
 				765470771EF969BE00ED20B7 /* AppDelegate.swift in Sources */,
+				765470A51EF96EC300ED20B7 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,14 +299,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		7654707A1EF969BE00ED20B7 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				7654707B1EF969BE00ED20B7 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		7654707F1EF969BE00ED20B7 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -421,6 +413,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.hoffware.FlickrSearch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -434,6 +427,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.hoffware.FlickrSearch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

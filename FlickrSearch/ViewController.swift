@@ -9,12 +9,12 @@
 import UIKit
 
 class ViewController: UIViewController {
+    fileprivate let navBarTitle = "Flickr Search"
     
     fileprivate struct ReuseIdentifier {
         static let flickrCell = "FlickrCell"
     }
     fileprivate let sectionInsets = UIEdgeInsets(top: 35.0, left: 10.0, bottom: 35.0, right: 10.0)
-
     fileprivate var itemsPerRow: Int {  // TODO: For performance, may want to only set this on orientation changes rather than having it be a computed property
         switch Constants.Device.idiom {
         case .phone:
@@ -27,27 +27,49 @@ class ViewController: UIViewController {
     }// = Constants.Device.idiom == UIUserInterfaceIdiom.phone ? 1 : 2
     
     var collectionView: UICollectionView!
+    var searchBar:UISearchBar!
+    var searchButton: UIBarButtonItem!
+    var cancelSearchButton: UIBarButtonItem!
+    
     let searchResults = [100,200,300,400,500,600,700,800,900]
 
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.title = "Flickr Search"
+        self.title = navBarTitle
         self.view.backgroundColor = Constants.Color.SearchViewControllerBackground
         
-        // collection view
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = sectionInsets
-        layout.itemSize = CGSize(width: 100, height: 100)
-        
-        self.collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
-        self.collectionView.dataSource = self
-        self.collectionView.delegate = self
-        
-        self.collectionView.register(FlickrCollectionViewCell.self, forCellWithReuseIdentifier: ReuseIdentifier.flickrCell)
+        self.collectionView = ({
+            let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+            layout.sectionInset = sectionInsets
+            layout.itemSize = CGSize(width: 100, height: 100)
+            
+            let collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
+            collectionView.dataSource = self
+            collectionView.delegate = self
+            
+            collectionView.register(FlickrCollectionViewCell.self, forCellWithReuseIdentifier: ReuseIdentifier.flickrCell)
+            
+            return collectionView
+        })()
         
         self.view.addSubview(self.collectionView)
-
+        
+        // search button
+        searchButton = UIBarButtonItem(image: UIImage(named: "search"), style: .plain, target: self, action: #selector(searchButtonDidTap(sender:)))
+        self.navigationItem.rightBarButtonItem = searchButton
+        
+        // cancel search button
+        cancelSearchButton = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelSearchButtonDidTap(sender:)))
+        
+        // search bar
+        searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 200, height: 20))  // TODO:
+        searchBar.placeholder = "Search Flickr"
+        
+        
+        
 //        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
 //        button.backgroundColor = .green
 //        button.setTitle("Test Button", for: .normal)
@@ -67,13 +89,30 @@ class ViewController: UIViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        resizeSearchBar()
         self.collectionView.frame = self.view.frame
         self.collectionView.collectionViewLayout.invalidateLayout()
         // self.collectionView.reloadData()  // TODO: Enable if image cells don't reload properly
     }
+    
+    func resizeSearchBar() {
+        let buttonItemView = cancelSearchButton.value(forKey: "view") as? UIView
+        let buttonItemSize = buttonItemView?.frame.width ?? 100.0
+        let searchBarWidth = self.view.frame.width - buttonItemSize - 50.0
+        searchBar.frame = CGRect(x: searchBar.frame.origin.x, y: searchBar.frame.origin.y, width: searchBarWidth, height: searchBar.frame.height)
+    }
 
-    func buttonAction(sender: UIButton!) {
-        printDeviceInfo()
+    func searchButtonDidTap(sender: UIBarButtonItem!) {
+        self.title = nil
+        self.navigationItem.rightBarButtonItem = cancelSearchButton
+        resizeSearchBar()
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchBar)
+    }
+    
+    func cancelSearchButtonDidTap(sender: UIBarButtonItem!) {
+        self.navigationItem.leftBarButtonItem = nil
+        self.title = navBarTitle
+        self.navigationItem.rightBarButtonItem = searchButton
     }
     
     func orientationChanged(notification: NSNotification) {
@@ -168,7 +207,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
                     width = availableWidth - regularWidth
                 }
             default:
-                assertionFailure("Index Path % 4 should never equal something else")
+                assertionFailure("Index Path % 4 should never equal anything other than 0,1,2,3")
             }
         } else {
             assertionFailure("Items per row can only be 1 or 2, if you want a different layout, it needs to be implemented!")

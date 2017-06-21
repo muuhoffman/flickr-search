@@ -9,19 +9,51 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    fileprivate struct ReuseIdentifier {
+        static let flickrCell = "FlickrCell"
+    }
+    fileprivate let sectionInsets = UIEdgeInsets(top: 35.0, left: 10.0, bottom: 35.0, right: 10.0)
+
+    fileprivate var itemsPerRow: Int {  // TODO: For performance, may want to only set this on orientation changes rather than having it be a computed property
+        switch Constants.Device.idiom {
+        case .phone:
+            return Constants.Device.orientation.isLandscape ? 2 : 1
+        case .pad:
+            return 2
+        default:
+            return 1
+        }
+    }// = Constants.Device.idiom == UIUserInterfaceIdiom.phone ? 1 : 2
+    
+    var collectionView: UICollectionView!
+    let searchResults = [100,200,300,400,500,600,700,800,900]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.title = "Flickr Search"
-        view.backgroundColor = Constants.Color.SearchViewControllerBackground
+        self.view.backgroundColor = Constants.Color.SearchViewControllerBackground
         
-        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
-        button.backgroundColor = .green
-        button.setTitle("Test Button", for: .normal)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        // collection view
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = sectionInsets
+        layout.itemSize = CGSize(width: 100, height: 100)
         
-        self.view.addSubview(button)
+        self.collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
+        self.collectionView.dataSource = self
+        self.collectionView.delegate = self
+        
+        self.collectionView.register(FlickrCollectionViewCell.self, forCellWithReuseIdentifier: ReuseIdentifier.flickrCell)
+        
+        self.view.addSubview(self.collectionView)
+
+//        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
+//        button.backgroundColor = .green
+//        button.setTitle("Test Button", for: .normal)
+//        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+//        
+//        self.view.addSubview(button)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -31,6 +63,13 @@ class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        self.collectionView.frame = self.view.frame
+        self.collectionView.collectionViewLayout.invalidateLayout()
+        // self.collectionView.reloadData()  // TODO: Enable if image cells don't reload properly
     }
 
     func buttonAction(sender: UIButton!) {
@@ -63,6 +102,91 @@ class ViewController: UIViewController {
         print("Height", Constants.Device.screenHeight)
         print("Width", Constants.Device.screenWidth)
     }
-
 }
 
+extension ViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.searchResults.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.flickrCell,
+                                                      for: indexPath) as! FlickrCollectionViewCell
+        switch indexPath.row % itemsPerRow {
+        case 0:
+            cell.backgroundColor = UIColor.blue
+        default:
+            cell.backgroundColor = UIColor.red
+        }
+        return cell
+    }
+}
+
+extension ViewController: UICollectionViewDelegate {
+    
+}
+
+extension ViewController: UICollectionViewDelegateFlowLayout {
+    //1
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        //2
+        let itemsPerRowCGFloat = CGFloat.init(itemsPerRow)
+        let horizontalPaddingSpace = sectionInsets.left * (itemsPerRowCGFloat + 1)
+        let availableWidth = view.frame.width - horizontalPaddingSpace
+        let verticalPaddingSpace = sectionInsets.top * (itemsPerRowCGFloat + 1)
+        let availableHeight = view.frame.height - verticalPaddingSpace
+        
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+        if itemsPerRow == 1 {
+            let dimension = availableWidth < availableHeight ? availableWidth : availableHeight
+            width = dimension
+            height = dimension
+        } else if itemsPerRow == 2 {
+            let wideWidthPercent: CGFloat = 0.60
+            let regularWidthPercent: CGFloat = 1.0 - wideWidthPercent
+            var regularWidth = availableWidth * regularWidthPercent
+            let isHeightSmaller = availableHeight < regularWidth
+            height = isHeightSmaller ? availableHeight : regularWidth
+            regularWidth = height
+            
+            switch indexPath.row % 4 {
+            case 0, 3:
+                width = regularWidth
+            case 1, 2:
+                if isHeightSmaller {
+                    let widthRatio = wideWidthPercent / regularWidthPercent
+                    let wideWidth = regularWidth * widthRatio
+                    width = wideWidth
+                } else {
+                    width = availableWidth - regularWidth
+                }
+            default:
+                assertionFailure("Index Path % 4 should never equal something else")
+            }
+        } else {
+            assertionFailure("Items per row can only be 1 or 2, if you want a different layout, it needs to be implemented!")
+        }
+        return CGSize(width: width, height: height)
+    }
+    
+    //3
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return sectionInsets
+    }
+    
+    // 4
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return sectionInsets.left
+    }
+}

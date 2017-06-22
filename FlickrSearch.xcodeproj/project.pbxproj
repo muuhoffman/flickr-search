@@ -15,6 +15,9 @@
 		765470971EF969BE00ED20B7 /* FlickrSearchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470961EF969BE00ED20B7 /* FlickrSearchUITests.swift */; };
 		765470A51EF96EC300ED20B7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470A41EF96EC300ED20B7 /* Constants.swift */; };
 		765470A71EFAB80700ED20B7 /* FlickrCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470A61EFAB80700ED20B7 /* FlickrCollectionViewCell.swift */; };
+		765527581EFC058F000F5D72 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765527571EFC058F000F5D72 /* NetworkService.swift */; };
+		7655275A1EFC1127000F5D72 /* Configuration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 765527591EFC1127000F5D72 /* Configuration.plist */; };
+		7655275C1EFC17B0000F5D72 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7655275B1EFC17B0000F5D72 /* Model.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +52,9 @@
 		765470981EF969BE00ED20B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		765470A41EF96EC300ED20B7 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		765470A61EFAB80700ED20B7 /* FlickrCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrCollectionViewCell.swift; sourceTree = "<group>"; };
+		765527571EFC058F000F5D72 /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		765527591EFC1127000F5D72 /* Configuration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Configuration.plist; sourceTree = "<group>"; };
+		7655275B1EFC17B0000F5D72 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +105,10 @@
 		765470751EF969BE00ED20B7 /* FlickrSearch */ = {
 			isa = PBXGroup;
 			children = (
+				765527571EFC058F000F5D72 /* NetworkService.swift */,
 				765470761EF969BE00ED20B7 /* AppDelegate.swift */,
+				7655275B1EFC17B0000F5D72 /* Model.swift */,
+				765527591EFC1127000F5D72 /* Configuration.plist */,
 				765470781EF969BE00ED20B7 /* ViewController.swift */,
 				765470A61EFAB80700ED20B7 /* FlickrCollectionViewCell.swift */,
 				7654707D1EF969BE00ED20B7 /* Assets.xcassets */,
@@ -238,6 +247,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7655275A1EFC1127000F5D72 /* Configuration.plist in Resources */,
 				765470811EF969BE00ED20B7 /* LaunchScreen.storyboard in Resources */,
 				7654707E1EF969BE00ED20B7 /* Assets.xcassets in Resources */,
 			);
@@ -264,8 +274,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				765527581EFC058F000F5D72 /* NetworkService.swift in Sources */,
 				765470791EF969BE00ED20B7 /* ViewController.swift in Sources */,
 				765470771EF969BE00ED20B7 /* AppDelegate.swift in Sources */,
+				7655275C1EFC17B0000F5D72 /* Model.swift in Sources */,
 				765470A51EF96EC300ED20B7 /* Constants.swift in Sources */,
 				765470A71EFAB80700ED20B7 /* FlickrCollectionViewCell.swift in Sources */,
 			);
@@ -512,6 +524,7 @@
 				7654709D1EF969BE00ED20B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7654709E1EF969BE00ED20B7 /* Build configuration list for PBXNativeTarget "FlickrSearchTests" */ = {
 			isa = XCConfigurationList;
@@ -520,6 +533,7 @@
 				765470A01EF969BE00ED20B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		765470A11EF969BE00ED20B7 /* Build configuration list for PBXNativeTarget "FlickrSearchUITests" */ = {
 			isa = XCConfigurationList;
@@ -528,6 +542,7 @@
 				765470A31EF969BE00ED20B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

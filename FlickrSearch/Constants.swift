@@ -42,4 +42,10 @@ struct Constants {
             }
         }
     }
+    
+    struct Flickr {
+        static var apiKey = ""
+        static var apiSecret = ""
+        static let resultsPerPage = 20
+    }
 }

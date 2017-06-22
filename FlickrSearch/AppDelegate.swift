@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        extractAndSetFlickrApiKey()
         initRootViewController()
         
         return true
@@ -54,5 +55,28 @@ extension AppDelegate {
         
         self.window?.rootViewController = navigationVC
         self.window?.makeKeyAndVisible()        
+    }
+    
+    func extractAndSetFlickrApiKey() {
+        guard let plistPath = Bundle.main.path(forResource: "Configuration", ofType: "plist") else {
+            assertionFailure("Configuration.plist not found in path")
+            return
+        }
+        guard let configuration = NSDictionary.init(contentsOfFile: plistPath) else {
+            assertionFailure("Could not init Configuration.plist as NSDictionary")
+            return
+        }
+        let flickrAPI = configuration["FlickrAPI"] as? NSDictionary
+        guard let apiKey = flickrAPI?["ClientID"] as? String else {
+            assertionFailure("FlickrAPI -> ClientID not found in Configuration.plist")
+            return
+        }
+        guard let apiSecret = flickrAPI?["ClientSecret"] as? String else {
+            assertionFailure("FlickrAPI -> ClientSecret not found in Configuration.plist")
+            return
+        }
+        Constants.Flickr.apiKey = apiKey
+        Constants.Flickr.apiSecret = apiSecret
+        
     }
 }

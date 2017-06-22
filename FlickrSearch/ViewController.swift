@@ -76,6 +76,11 @@ class ViewController: UIViewController {
 //        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
 //        
 //        self.view.addSubview(button)
+        
+        NetworkService.shared.getSearchResults(searchText: "cat dog", page: 1) { (page, errorMessage) in
+            print(page?.photos.count ?? -1)
+            print(errorMessage)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

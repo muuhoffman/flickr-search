@@ -20,6 +20,8 @@ class FlickrCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         print("init called", "frame:", frame)
         self.imageView = UIImageView(frame: CGRect(x: 0.0, y: 0.0, width: frame.width, height: frame.height))
+        self.imageView?.contentMode = UIViewContentMode.scaleAspectFill
+        self.imageView?.clipsToBounds = true
         self.addSubview(self.imageView!)
     }
     
@@ -27,7 +29,12 @@ class FlickrCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
+        self.imageView?.frame = CGRect(x: 0.0, y: 0.0, width: layoutAttributes.frame.width, height: layoutAttributes.frame.height)
+    }
+    
     func setNewContent(content: FlickrPhoto) {
+        self.imageView?.image = nil
         // cancel previous content's download
         self.flickrPhoto?.cancelDownload()
         // set the new content

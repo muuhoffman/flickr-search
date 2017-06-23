@@ -110,8 +110,9 @@ class ViewController: UIViewController {
         super.viewWillLayoutSubviews()
         resizeSearchBar()
         self.collectionView.frame = self.view.frame
-        self.collectionView.collectionViewLayout.invalidateLayout()
-        // self.collectionView.reloadData()  // TODO: Enable if image cells don't reload properly
+//        self.collectionView.collectionViewLayout.invalidateLayout()
+        self.collectionView.performBatchUpdates(nil, completion: nil)
+        self.collectionView.reloadData()  // TODO: Enable if image cells don't reload properly
     }
     
     func resizeSearchBar() {
@@ -175,13 +176,12 @@ extension ViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.flickrCell,
                                                       for: indexPath) as! FlickrCollectionViewCell
         
-//        switch indexPath.row % itemsPerRow {
-//        case 0:
-//            cell.backgroundColor = UIColor.blue
-//        default:
-//            cell.backgroundColor = UIColor.red
-//        }
-        cell.backgroundColor = UIColor.clear
+        switch indexPath.row % itemsPerRow {
+        case 0:
+            cell.backgroundColor = UIColor.blue
+        default:
+            cell.backgroundColor = UIColor.red
+        }
         cell.setNewContent(content: self.searchResults[indexPath.row])
         
         return cell
@@ -201,16 +201,12 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         let itemsPerRowCGFloat = CGFloat.init(itemsPerRow)
         let horizontalPaddingSpace = sectionInsets.left * (itemsPerRowCGFloat + 1)
         let availableWidth = view.frame.width - horizontalPaddingSpace
-        let verticalPaddingSpace = sectionInsets.top * (itemsPerRowCGFloat + 1)
+        let verticalPaddingSpace = sectionInsets.top + sectionInsets.bottom
         let availableHeight = view.frame.height - verticalPaddingSpace
         
         var width: CGFloat = 0
         var height: CGFloat = 0
-        if itemsPerRow == 1 {
-            let dimension = availableWidth < availableHeight ? availableWidth : availableHeight
-            width = dimension
-            height = dimension
-        } else if itemsPerRow == 2 {
+        if itemsPerRow == 2 {
             let wideWidthPercent: CGFloat = 0.60
             let regularWidthPercent: CGFloat = 1.0 - wideWidthPercent
             var regularWidth = availableWidth * regularWidthPercent
@@ -233,7 +229,9 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
                 assertionFailure("Index Path % 4 should never equal anything other than 0,1,2,3")
             }
         } else {
-            assertionFailure("Items per row can only be 1 or 2, if you want a different layout, it needs to be implemented!")
+            let dimension = availableWidth / itemsPerRowCGFloat < availableHeight ? availableWidth / itemsPerRowCGFloat : availableHeight
+            width = dimension
+            height = dimension
         }
         return CGSize(width: width, height: height)
     }
@@ -254,6 +252,18 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension ViewController: UISearchBarDelegate {
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        searchBar.resignFirstResponder()
+    }
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         debouncedSearch()
     }

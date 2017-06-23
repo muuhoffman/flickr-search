@@ -35,8 +35,8 @@ class FlickrCollectionViewCell: UICollectionViewCell {
     
     func setNewContent(content: FlickrPhoto) {
         self.imageView?.image = nil
-        // cancel previous content's download
-        self.flickrPhoto?.cancelDownload()
+        // pause previous content's download
+        self.flickrPhoto?.pauseDownload()
         // set the new content
         self.flickrPhoto = content
         // get the new image

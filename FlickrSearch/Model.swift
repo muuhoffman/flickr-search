@@ -35,8 +35,22 @@ class FlickrPhoto {
         if let _ = image {
             completion(image!)
         } else {
-            self.imageCompletion = completion
-            downloadImage()
+            if let downloadState = download?.state {
+                switch downloadState {
+                case .running:
+                    self.imageCompletion = completion
+                case .suspended:
+                    self.imageCompletion = completion
+                    self.download?.resume()
+                case .completed:
+                    assertionFailure("Should not be here since image would have been set")
+                case .canceling:
+                    assertionFailure("Umm... what to do if we're cancelling")
+                }
+            } else {
+                self.imageCompletion = completion
+                downloadImage()
+            }
         }
     }
     
@@ -48,9 +62,11 @@ class FlickrPhoto {
             guard let data = data, error == nil else { return }
             print(response?.suggestedFilename ?? url.lastPathComponent)
             print("Download Finished")
-            self.image = UIImage(data: data)
+            let image = UIImage(data: data)
             DispatchQueue.main.async() { () -> Void in
+                self.image = image
                 self.imageCompletion?(self.image)
+                self.imageCompletion = nil
             }
         }
     }
@@ -64,9 +80,14 @@ class FlickrPhoto {
         self.download?.resume()
     }
     
-    func cancelDownload() {
+    func pauseDownload() {
+        self.download?.suspend()
         self.imageCompletion = nil
+    }
+    
+    func cancelDownload() {
         self.download?.cancel()
+        self.imageCompletion = nil
     }
 }
 

@@ -31,10 +31,10 @@ class ViewController: UIViewController {
     var searchButton: UIBarButtonItem!
     var cancelSearchButton: UIBarButtonItem!
     
-    let searchResults = [100,200,300,400,500,600,700,800,900]
+    var debouncedSearch: (()->())!
+    
+    var searchResults: [FlickrPhoto] = [FlickrPhoto]()
 
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -67,8 +67,27 @@ class ViewController: UIViewController {
         // search bar
         searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 200, height: 20))  // TODO:
         searchBar.placeholder = "Search Flickr"
+        searchBar.delegate = self
         
-        
+        debouncedSearch = debounce(delay: 1000, queue: DispatchQueue.main, action: {
+            // This is a new search
+            // Clear old search
+            self.searchResults.removeAll()
+            self.collectionView.reloadData()
+            // If no search text, don't search, just clear the data
+            guard let searchText = self.searchBar.text, searchText != "" else {
+                return
+            }
+            // Start new search request
+            NetworkService.shared.getSearchResults(searchText: searchText, page: 1, completion: { [weak self] (page, errorMessage) in
+                if let page = page {
+                    self?.searchResults.append(contentsOf: page.photos)
+                    self?.collectionView.reloadData()
+                } else {
+                    print(errorMessage)
+                }
+            })
+        })
         
 //        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
 //        button.backgroundColor = .green
@@ -76,11 +95,6 @@ class ViewController: UIViewController {
 //        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
 //        
 //        self.view.addSubview(button)
-        
-        NetworkService.shared.getSearchResults(searchText: "cat dog", page: 1) { (page, errorMessage) in
-            print(page?.photos.count ?? -1)
-            print(errorMessage)
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -160,12 +174,16 @@ extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.flickrCell,
                                                       for: indexPath) as! FlickrCollectionViewCell
-        switch indexPath.row % itemsPerRow {
-        case 0:
-            cell.backgroundColor = UIColor.blue
-        default:
-            cell.backgroundColor = UIColor.red
-        }
+        
+//        switch indexPath.row % itemsPerRow {
+//        case 0:
+//            cell.backgroundColor = UIColor.blue
+//        default:
+//            cell.backgroundColor = UIColor.red
+//        }
+        cell.backgroundColor = UIColor.clear
+        cell.setNewContent(content: self.searchResults[indexPath.row])
+        
         return cell
     }
 }
@@ -232,5 +250,28 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return sectionInsets.left
+    }
+}
+
+extension ViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        debouncedSearch()
+    }
+    
+    func debounce(delay:Int, queue:DispatchQueue, action: @escaping (()->())) -> ()->() {
+        var lastFireTime = DispatchTime.now()
+        let dispatchDelay = DispatchTimeInterval.milliseconds(delay)
+        
+        return {
+            lastFireTime = DispatchTime.now()
+            let dispatchTime: DispatchTime = DispatchTime.now() + dispatchDelay
+            queue.asyncAfter(deadline: dispatchTime, execute: {
+                let when: DispatchTime = lastFireTime + dispatchDelay
+                let now = DispatchTime.now()
+                if now.rawValue >= when.rawValue {
+                    action()
+                }
+            })
+        }
     }
 }

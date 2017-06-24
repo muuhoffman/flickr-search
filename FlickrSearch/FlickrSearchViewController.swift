@@ -259,11 +259,13 @@ extension FlickrSearchViewController: UICollectionViewDataSource {
 
 extension FlickrSearchViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        openPicture(currentRow: indexPath.row)
+        openImage(currentRow: indexPath.row)
     }
     
-    private func openPicture(currentRow: Int) {
-        
+    private func openImage(currentRow: Int) {
+        let imageVC = ImageDetailViewController()
+        imageVC.flickrPhoto = searchResults[currentRow]
+        self.navigationController?.pushViewController(imageVC, animated: true)
     }
 }
 

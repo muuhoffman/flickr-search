@@ -50,7 +50,7 @@ extension AppDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
         let navigationVC = UINavigationController()
-        let initialVC = ViewController()
+        let initialVC = FlickrSearchViewController()
         navigationVC.viewControllers = [initialVC]
         
         self.window?.rootViewController = navigationVC

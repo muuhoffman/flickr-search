@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class FlickrSearchViewController: UIViewController {
     fileprivate let navBarTitle = "Flickr Search"
     fileprivate struct ReuseIdentifier {
         static let flickrCell = "FlickrCell"
@@ -211,7 +211,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UICollectionViewDataSource {
+extension FlickrSearchViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -257,11 +257,17 @@ extension ViewController: UICollectionViewDataSource {
     }
 }
 
-extension ViewController: UICollectionViewDelegate {
+extension FlickrSearchViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        openPicture(currentRow: indexPath.row)
+    }
     
+    private func openPicture(currentRow: Int) {
+        
+    }
 }
 
-extension ViewController: UICollectionViewDelegateFlowLayout {
+extension FlickrSearchViewController: UICollectionViewDelegateFlowLayout {
     //1
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -320,7 +326,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension ViewController: UISearchBarDelegate {
+extension FlickrSearchViewController: UISearchBarDelegate {
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }

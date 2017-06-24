@@ -43,7 +43,10 @@ class FlickrPhoto {
                     self.imageCompletion = completion
                     self.download?.resume()
                 case .completed:
-                    assertionFailure("Should not be here since image would have been set")
+                    self.imageCompletion = completion
+                    if let _ = image {
+                        completion(image!)
+                    }
                 case .canceling:
                     assertionFailure("Umm... what to do if we're cancelling")
                 }
@@ -67,6 +70,7 @@ class FlickrPhoto {
                 self.image = image
                 self.imageCompletion?(self.image)
                 self.imageCompletion = nil
+                self.download = nil
             }
         }
     }

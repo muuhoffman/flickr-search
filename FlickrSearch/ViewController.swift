@@ -10,7 +10,6 @@ import UIKit
 
 class ViewController: UIViewController {
     fileprivate let navBarTitle = "Flickr Search"
-    
     fileprivate struct ReuseIdentifier {
         static let flickrCell = "FlickrCell"
     }
@@ -26,14 +25,19 @@ class ViewController: UIViewController {
         }
     }// = Constants.Device.idiom == UIUserInterfaceIdiom.phone ? 1 : 2
     
-    var collectionView: UICollectionView!
-    var searchBar:UISearchBar!
-    var searchButton: UIBarButtonItem!
-    var cancelSearchButton: UIBarButtonItem!
+    fileprivate var collectionView: UICollectionView!
+    fileprivate var searchBar:UISearchBar!
+    fileprivate var searchButton: UIBarButtonItem!
+    fileprivate var cancelSearchButton: UIBarButtonItem!
     
-    var debouncedSearch: (()->())!
+    fileprivate var debouncedSearch: (()->())!
+    fileprivate var searchResults: [FlickrPhoto] = [FlickrPhoto]()
     
-    var searchResults: [FlickrPhoto] = [FlickrPhoto]()
+    fileprivate var lastPageLoaded: Int = 0
+    fileprivate var firstPageLoaded: Int = 0
+    fileprivate var pagePointer: Int = 0
+    fileprivate var picturePointer: Int = 0
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,14 +83,10 @@ class ViewController: UIViewController {
                 return
             }
             // Start new search request
-            NetworkService.shared.getSearchResults(searchText: searchText, page: 1, completion: { [weak self] (page, errorMessage) in
-                if let page = page {
-                    self?.searchResults.append(contentsOf: page.photos)
-                    self?.collectionView.reloadData()
-                } else {
-                    print(errorMessage)
-                }
-            })
+            self.firstPageLoaded = 0
+            self.lastPageLoaded = 0
+            self.pagePointer = 0
+            self.search(searchText: searchText, newPageNumber: 1)
         })
         
 //        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
@@ -104,6 +104,7 @@ class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+        removePicturesOnMemoryWarning()
     }
     
     override func viewWillLayoutSubviews() {
@@ -115,7 +116,7 @@ class ViewController: UIViewController {
         self.collectionView.reloadData()  // TODO: Enable if image cells don't reload properly
     }
     
-    func resizeSearchBar() {
+    fileprivate func resizeSearchBar() {
         let buttonItemView = cancelSearchButton.value(forKey: "view") as? UIView
         let buttonItemSize = buttonItemView?.frame.width ?? 100.0
         let searchBarWidth = self.view.frame.width - buttonItemSize - 50.0
@@ -139,7 +140,7 @@ class ViewController: UIViewController {
         printDeviceInfo()
     }
     
-    func printDeviceInfo() {
+    fileprivate func printDeviceInfo() {
         switch Constants.Device.idiom {
         case .phone:
             print("iphone")
@@ -161,6 +162,53 @@ class ViewController: UIViewController {
         print("Height", Constants.Device.screenHeight)
         print("Width", Constants.Device.screenWidth)
     }
+    
+    fileprivate func printPaginationStats() {
+        let calculatedSearchResultsCount = (lastPageLoaded-firstPageLoaded+1)*Constants.Flickr.resultsPerPage
+        print("firstPage: \(firstPageLoaded)\nlastPage: \(lastPageLoaded)\nsearchResultsCount: \(searchResults.count)\nexpectedSearchResultsCount: \(calculatedSearchResultsCount)")
+    }
+    
+    fileprivate func search(searchText: String, newPageNumber: Int) {
+        NetworkService.shared.getSearchResults(searchText: searchText, page: newPageNumber, completion: { [weak self] (page, errorMessage) in
+            if let page = page {
+                if let lastPageLoaded = self?.lastPageLoaded, newPageNumber > lastPageLoaded {
+                    if self?.firstPageLoaded == 0 {
+                        self?.firstPageLoaded = 1
+                    }
+                    self?.lastPageLoaded = newPageNumber
+                    self?.searchResults.append(contentsOf: page.photos)
+                    
+                } else if let firstPageLoaded = self?.firstPageLoaded, newPageNumber < firstPageLoaded {
+                    self?.firstPageLoaded = newPageNumber
+                    self?.searchResults.insert(contentsOf: page.photos, at: 0)
+                } else { // don't know where this page should go
+                    assertionFailure("Page loaded that neither goes before or after already loaded pages")
+                    return
+                }
+                self?.collectionView.reloadData()
+            } else {
+                print(errorMessage)
+            }
+        })
+    }
+    
+    /**
+     Goal: Remove the farthest photos from our current location in the search
+    */
+    private func removePicturesOnMemoryWarning() {
+        let firstPageDistance = self.pagePointer - self.firstPageLoaded
+        let lastPageDistance = self.lastPageLoaded - self.pagePointer
+        if firstPageDistance > lastPageDistance {
+            // we're farther from the beginning, so remove the first page
+            self.searchResults.removeFirst(Constants.Flickr.resultsPerPage)
+            self.firstPageLoaded += 1
+        } else {
+            // we're farther from the end, so remove the end
+            self.searchResults.removeLast(Constants.Flickr.resultsPerPage)
+            self.lastPageLoaded -= 1
+        }
+        self.collectionView.reloadData()
+    }
 }
 
 extension ViewController: UICollectionViewDataSource {
@@ -173,6 +221,11 @@ extension ViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        // update page & picture pointer, paginate if necessary
+        self.updatePages(currentRow: indexPath.row)
+        
+        // update the cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.flickrCell,
                                                       for: indexPath) as! FlickrCollectionViewCell
         
@@ -185,6 +238,22 @@ extension ViewController: UICollectionViewDataSource {
         cell.setNewContent(content: self.searchResults[indexPath.row])
         
         return cell
+    }
+    
+    private func updatePages(currentRow: Int) {
+        self.picturePointer = currentRow  // set the current pic we are viewing
+        self.pagePointer = (self.picturePointer / Constants.Flickr.resultsPerPage) + 1  // set the current page based on the pic we are viewing
+        let shouldLoadNextPage = self.picturePointer == (self.searchResults.count - 1)
+        let shouldLoadPreviousPage = self.picturePointer == 0 && self.firstPageLoaded > 1
+        if shouldLoadNextPage {  // if we are at the last picture
+            if let searchText = self.searchBar.text, searchText != "" {
+                self.search(searchText: searchText, newPageNumber: self.lastPageLoaded + 1)
+            }
+        } else if shouldLoadPreviousPage {
+            if let searchText = self.searchBar.text, searchText != "" {
+                self.search(searchText: searchText, newPageNumber: self.firstPageLoaded - 1)
+            }
+        } //else do nothing
     }
 }
 

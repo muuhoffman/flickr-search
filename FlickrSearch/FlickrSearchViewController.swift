@@ -23,9 +23,10 @@ class FlickrSearchViewController: UIViewController {
         default:
             return 1
         }
-    }// = Constants.Device.idiom == UIUserInterfaceIdiom.phone ? 1 : 2
+    }
     
     fileprivate var collectionView: UICollectionView!
+    fileprivate var defaultScreenButton: UIButton!
     fileprivate var searchBar:UISearchBar!
     fileprivate var searchButton: UIBarButtonItem!
     fileprivate var cancelSearchButton: UIBarButtonItem!
@@ -33,6 +34,10 @@ class FlickrSearchViewController: UIViewController {
     struct ActivityIndicatorSize {
         static let width: CGFloat = 60.0
         static let height: CGFloat = 60.0
+    }
+    struct DefaultScreenButtonSize {
+        static let width: CGFloat = 180.0
+        static let height: CGFloat = 50.0
     }
     
     fileprivate var debouncedSearch: (()->())!
@@ -65,6 +70,19 @@ class FlickrSearchViewController: UIViewController {
             return collectionView
         })()
         self.view.addSubview(self.collectionView)
+        
+        self.defaultScreenButton = ({
+            let button = UIButton(frame: CGRect(x: self.view.frame.width/2.0 - DefaultScreenButtonSize.width/2.0, y: self.view.frame.height/2.0 - DefaultScreenButtonSize.height/2.0, width: DefaultScreenButtonSize.width, height: DefaultScreenButtonSize.height))
+            button.backgroundColor = Constants.Color.blue
+            button.setTitle("Search Photos", for: .normal)
+            button.setTitleColor(UIColor.white, for: .normal)
+            button.layer.cornerRadius = 3
+            button.clipsToBounds = true
+            button.addTarget(self, action: #selector(searchButtonDidTap(sender:)), for: .touchUpInside)
+            return button
+        })()
+        
+        self.view.addSubview(self.defaultScreenButton)
         
         // search button
         searchButton = UIBarButtonItem(image: UIImage(named: "search"), style: .plain, target: self, action: #selector(searchButtonDidTap(sender:)))
@@ -127,17 +145,21 @@ class FlickrSearchViewController: UIViewController {
         searchBar.frame = CGRect(x: searchBar.frame.origin.x, y: searchBar.frame.origin.y, width: searchBarWidth, height: searchBar.frame.height)
     }
 
-    func searchButtonDidTap(sender: UIBarButtonItem!) {
+    func searchButtonDidTap(sender: UIView!) {
         self.title = nil
         self.navigationItem.rightBarButtonItem = cancelSearchButton
         resizeSearchBar()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: searchBar)
+        self.defaultScreenButton.isHidden = true
     }
     
     func cancelSearchButtonDidTap(sender: UIBarButtonItem!) {
         self.navigationItem.leftBarButtonItem = nil
         self.title = navBarTitle
         self.navigationItem.rightBarButtonItem = searchButton
+        if searchResults.count == 0 {
+            self.defaultScreenButton.isHidden = false
+        }
     }
     
     func orientationChanged(notification: NSNotification) {

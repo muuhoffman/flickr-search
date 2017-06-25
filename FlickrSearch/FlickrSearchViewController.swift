@@ -169,7 +169,7 @@ class FlickrSearchViewController: UIViewController {
     }
     
     fileprivate func search(searchText: String, newPageNumber: Int) {
-        NetworkService.shared.getSearchResults(searchText: searchText, page: newPageNumber, completion: { [weak self] (page, errorMessage) in
+        PersistenceService.shared.getSearchResults(searchText: searchText, page: newPageNumber, completion: { [weak self] (page, errorMessage) in
             if let page = page {
                 if let lastPageLoaded = self?.lastPageLoaded, newPageNumber > lastPageLoaded {
                     if self?.firstPageLoaded == 0 {

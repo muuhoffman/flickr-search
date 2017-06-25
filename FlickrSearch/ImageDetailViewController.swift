@@ -36,11 +36,6 @@ class ImageDetailViewController: UIViewController {
             let buttonY = self.view.frame.height - favoriteButtonSize.height - 8
             let button = UIButton(frame: CGRect(x: buttonX, y: buttonY, width: favoriteButtonSize.width, height: favoriteButtonSize.height))
             button.imageEdgeInsets = UIEdgeInsetsMake(8.0, 8.0, 8.0, 8.0)
-            if flickrPhoto.isFavorite {
-                button.setImage(#imageLiteral(resourceName: "star-full"), for: .normal)
-            } else {
-                button.setImage(#imageLiteral(resourceName: "star-empty"), for: .normal)
-            }
             button.addTarget(self, action: #selector(favoriteDidTap(sender:)), for: .touchUpInside)
             return button
         })()
@@ -53,6 +48,7 @@ class ImageDetailViewController: UIViewController {
             // TODO: cancel loader
             self?.imageView.image = image
         }
+        setFavorite(isFavorite: flickrPhoto.isFavorite)
     }
 
     override func viewWillLayoutSubviews() {
@@ -61,13 +57,13 @@ class ImageDetailViewController: UIViewController {
     }
     
     func favoriteDidTap(sender: UIButton) {
-        // TODO: Persist the favorite
-        if self.flickrPhoto.isFavorite {
-            self.flickrPhoto.isFavorite = false
-            self.favoriteButton.setImage(#imageLiteral(resourceName: "star-empty"), for: .normal)
-        } else {
-            self.flickrPhoto.isFavorite = true
-            self.favoriteButton.setImage(#imageLiteral(resourceName: "star-full"), for: .normal)
-        }
+        let isNowFavorite = !self.flickrPhoto.isFavorite
+        setFavorite(isFavorite: isNowFavorite)
+        PersistenceService.shared.setFavorite(imageId: self.flickrPhoto.id, isFavorite: isNowFavorite)
+    }
+    
+    private func setFavorite(isFavorite: Bool) {
+        self.flickrPhoto.isFavorite = isFavorite
+        self.favoriteButton?.setImage(isFavorite ? #imageLiteral(resourceName: "star-full") : #imageLiteral(resourceName: "star-empty"), for: .normal)
     }
 }

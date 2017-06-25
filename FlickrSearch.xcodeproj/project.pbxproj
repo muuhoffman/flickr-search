@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7604C8251EFF396D00925549 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7604C8241EFF396D00925549 /* PersistenceService.swift */; };
 		765470771EF969BE00ED20B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470761EF969BE00ED20B7 /* AppDelegate.swift */; };
 		765470791EF969BE00ED20B7 /* FlickrSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470781EF969BE00ED20B7 /* FlickrSearchViewController.swift */; };
 		7654707E1EF969BE00ED20B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7654707D1EF969BE00ED20B7 /* Assets.xcassets */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7604C8241EFF396D00925549 /* PersistenceService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
 		765470731EF969BE00ED20B7 /* FlickrSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		765470761EF969BE00ED20B7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		765470781EF969BE00ED20B7 /* FlickrSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrSearchViewController.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				765527571EFC058F000F5D72 /* NetworkService.swift */,
+				7604C8241EFF396D00925549 /* PersistenceService.swift */,
 				765470761EF969BE00ED20B7 /* AppDelegate.swift */,
 				7655275B1EFC17B0000F5D72 /* Model.swift */,
 				765527591EFC1127000F5D72 /* Configuration.plist */,
@@ -287,6 +290,7 @@
 				7655275C1EFC17B0000F5D72 /* Model.swift in Sources */,
 				765470A51EF96EC300ED20B7 /* Constants.swift in Sources */,
 				765470A71EFAB80700ED20B7 /* FlickrCollectionViewCell.swift in Sources */,
+				7604C8251EFF396D00925549 /* PersistenceService.swift in Sources */,
 				765527601EFF251F000F5D72 /* UIImageExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

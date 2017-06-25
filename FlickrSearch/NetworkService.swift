@@ -13,7 +13,6 @@ class NetworkService {
     typealias QueryResult = (FlickrPage?, String) -> ()
     typealias JSONDictionary = [String: Any]
 
-    
     static let shared = NetworkService()
     
     let defaultSession = URLSession(configuration: .default)

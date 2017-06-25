@@ -68,11 +68,11 @@ class FlickrCollectionViewCell: UICollectionViewCell {
     }
     
     func favoriteDidTap(sender: UIButton) {
-        // TODO: Persist the favorite
-        guard let isFavorite = self.flickrPhoto?.isFavorite else {
+        guard let isFavorite = self.flickrPhoto?.isFavorite, let imageId = self.flickrPhoto?.id else {
             return
         }
         setFavorite(isFavorite: !isFavorite)
+        PersistenceService.shared.setFavorite(imageId: imageId, isFavorite: !isFavorite)
     }
     
     private func setFavorite(isFavorite: Bool) {

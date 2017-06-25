@@ -10,11 +10,18 @@ import UIKit
 
 class FlickrCollectionViewCell: UICollectionViewCell {
     var flickrPhoto: FlickrPhoto?
-    var imageView: UIImageView?
-    var favoriteButton: UIButton?
+    var imageView: UIImageView!
+    var favoriteButton: UIButton!
+    var acitivityIndicator: CircleActivityIndicator!
+    
     struct favoriteButtonSize {
         static let width: CGFloat = 44
         static let height: CGFloat = 44
+    }
+    
+    struct ActivityIndicatorSize {
+        static let width: CGFloat = 50
+        static let height: CGFloat = 50
     }
     
     override init(frame: CGRect) {
@@ -37,8 +44,17 @@ class FlickrCollectionViewCell: UICollectionViewCell {
             return button
         })()
         
+        self.acitivityIndicator = ({
+            let activityIndicatorOriginX = self.frame.width/2.0 - ActivityIndicatorSize.width/2.0
+            let activityIndicatorOriginY = self.frame.height/2.0 - ActivityIndicatorSize.height/2.0
+            let activityIndicator = CircleActivityIndicator(frame: CGRect(x: activityIndicatorOriginX , y: activityIndicatorOriginY, width: ActivityIndicatorSize.width, height: ActivityIndicatorSize.height))
+            activityIndicator.color = UIColor.white
+            return activityIndicator
+        })()
+        
         self.addSubview(self.imageView!)
         self.addSubview(self.favoriteButton!)
+        self.addSubview(self.acitivityIndicator!)
 
         
     }
@@ -48,23 +64,29 @@ class FlickrCollectionViewCell: UICollectionViewCell {
     }
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
-        self.imageView?.frame = CGRect(x: 0.0, y: 0.0, width: layoutAttributes.frame.width, height: layoutAttributes.frame.height)
-        self.favoriteButton?.frame = CGRect(x: layoutAttributes.frame.width - favoriteButtonSize.width - 4, y: layoutAttributes.frame.height - favoriteButtonSize.height - 4, width: favoriteButtonSize.width, height: favoriteButtonSize.height)
+        self.imageView.frame = CGRect(x: 0.0, y: 0.0, width: layoutAttributes.frame.width, height: layoutAttributes.frame.height)
+        self.favoriteButton.frame = CGRect(x: layoutAttributes.frame.width - favoriteButtonSize.width - 4, y: layoutAttributes.frame.height - favoriteButtonSize.height - 4, width: favoriteButtonSize.width, height: favoriteButtonSize.height)
+        let activityIndicatorOriginX = layoutAttributes.frame.width/2.0 - ActivityIndicatorSize.width/2.0
+        let activityIndicatorOriginY = layoutAttributes.frame.height/2.0 - ActivityIndicatorSize.height/2.0
+        self.acitivityIndicator.frame = CGRect(x: activityIndicatorOriginX , y: activityIndicatorOriginY, width: ActivityIndicatorSize.width, height: ActivityIndicatorSize.height)
     }
     
     func setNewContent(content: FlickrPhoto) {
-        self.imageView?.image = nil
+        self.imageView.image = nil
         // pause previous content's download
         self.flickrPhoto?.pauseDownload()
         // set the new content
         self.flickrPhoto = content
         
-        // get the new image
-        self.flickrPhoto?.getImage(completion: { (image) in
-            self.imageView?.image = image  // TODO: Do we need a weak reference here?
-        })
+        // start the activity indicator
+        self.acitivityIndicator.startAnimating()
         
-        setFavorite(isFavorite: self.flickrPhoto?.isFavorite ?? false)
+        // get the new image
+        self.flickrPhoto?.getImage(completion: { [weak self] (image) in
+            self?.acitivityIndicator.stopAnimating()
+            self?.imageView.image = image
+            self?.setFavorite(isFavorite: self?.flickrPhoto?.isFavorite ?? false)
+        })
     }
     
     func favoriteDidTap(sender: UIButton) {
@@ -77,6 +99,6 @@ class FlickrCollectionViewCell: UICollectionViewCell {
     
     private func setFavorite(isFavorite: Bool) {
         self.flickrPhoto?.isFavorite = isFavorite
-        self.favoriteButton?.setImage(isFavorite ? #imageLiteral(resourceName: "star-full") : #imageLiteral(resourceName: "star-empty"), for: .normal)
+        self.favoriteButton.setImage(isFavorite ? #imageLiteral(resourceName: "star-full") : #imageLiteral(resourceName: "star-empty"), for: .normal)
     }
 }

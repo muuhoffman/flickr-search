@@ -24,7 +24,9 @@ class NetworkService {
             dataTask = defaultSession.dataTask(with: url) { data, response, error in
                 defer { self.dataTask = nil }
                 if let error = error {
-                    completion(nil, "DataTask error: " + error.localizedDescription + "\n")
+                    DispatchQueue.main.async {
+                        completion(nil, "DataTask error: " + error.localizedDescription + "\n")
+                    }
                 } else if let data = data,
                     let response = response as? HTTPURLResponse,
                     response.statusCode == 200 {

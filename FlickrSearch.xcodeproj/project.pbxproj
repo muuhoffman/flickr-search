@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7604C8251EFF396D00925549 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7604C8241EFF396D00925549 /* PersistenceService.swift */; };
+		7604C8271EFF444900925549 /* CircleLoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7604C8261EFF444900925549 /* CircleLoaderView.swift */; };
 		765470771EF969BE00ED20B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470761EF969BE00ED20B7 /* AppDelegate.swift */; };
 		765470791EF969BE00ED20B7 /* FlickrSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765470781EF969BE00ED20B7 /* FlickrSearchViewController.swift */; };
 		7654707E1EF969BE00ED20B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7654707D1EF969BE00ED20B7 /* Assets.xcassets */; };
@@ -42,6 +43,7 @@
 
 /* Begin PBXFileReference section */
 		7604C8241EFF396D00925549 /* PersistenceService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
+		7604C8261EFF444900925549 /* CircleLoaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleLoaderView.swift; sourceTree = "<group>"; };
 		765470731EF969BE00ED20B7 /* FlickrSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		765470761EF969BE00ED20B7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		765470781EF969BE00ED20B7 /* FlickrSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrSearchViewController.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 				7655275B1EFC17B0000F5D72 /* Model.swift */,
 				765527591EFC1127000F5D72 /* Configuration.plist */,
 				765470781EF969BE00ED20B7 /* FlickrSearchViewController.swift */,
+				7604C8261EFF444900925549 /* CircleLoaderView.swift */,
 				7655275D1EFF1C9F000F5D72 /* ImageDetailViewController.swift */,
 				765470A61EFAB80700ED20B7 /* FlickrCollectionViewCell.swift */,
 				7654707D1EF969BE00ED20B7 /* Assets.xcassets */,
@@ -292,6 +295,7 @@
 				765470A71EFAB80700ED20B7 /* FlickrCollectionViewCell.swift in Sources */,
 				7604C8251EFF396D00925549 /* PersistenceService.swift in Sources */,
 				765527601EFF251F000F5D72 /* UIImageExtension.swift in Sources */,
+				7604C8271EFF444900925549 /* CircleLoaderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

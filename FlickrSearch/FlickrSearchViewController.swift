@@ -29,6 +29,11 @@ class FlickrSearchViewController: UIViewController {
     fileprivate var searchBar:UISearchBar!
     fileprivate var searchButton: UIBarButtonItem!
     fileprivate var cancelSearchButton: UIBarButtonItem!
+    fileprivate var activityIndicator: CircleActivityIndicator!
+    struct ActivityIndicatorSize {
+        static let width: CGFloat = 60.0
+        static let height: CGFloat = 60.0
+    }
     
     fileprivate var debouncedSearch: (()->())!
     fileprivate var searchResults: [FlickrPhoto] = [FlickrPhoto]()
@@ -53,7 +58,8 @@ class FlickrSearchViewController: UIViewController {
             let collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
             collectionView.dataSource = self
             collectionView.delegate = self
-            
+            collectionView.contentInset = UIEdgeInsetsMake(-20, 0, 0, 0)
+            collectionView.backgroundColor = UIColor.clear
             collectionView.register(FlickrCollectionViewCell.self, forCellWithReuseIdentifier: ReuseIdentifier.flickrCell)
             
             return collectionView
@@ -72,13 +78,15 @@ class FlickrSearchViewController: UIViewController {
         searchBar.placeholder = "Search Flickr"
         searchBar.delegate = self
         
+        // activityIndicator
+        activityIndicator = CircleActivityIndicator(frame: CGRect(x: self.view.frame.midX - ActivityIndicatorSize.width/2.0, y: self.view.frame.midY - ActivityIndicatorSize.height/2.0, width: ActivityIndicatorSize.width, height: ActivityIndicatorSize.height))
+        activityIndicator.color = Constants.Color.blue
+        self.view.addSubview(activityIndicator)
+        
         debouncedSearch = debounce(delay: 1000, queue: DispatchQueue.main, action: {
-            // This is a new search
-            // Clear old search
-            self.searchResults.removeAll()
-            self.collectionView.reloadData()
             // If no search text, don't search, just clear the data
             guard let searchText = self.searchBar.text, searchText != "" else {
+                self.activityIndicator.stopAnimating()
                 return
             }
             // Start new search request
@@ -87,13 +95,6 @@ class FlickrSearchViewController: UIViewController {
             self.pagePointer = 0
             self.search(searchText: searchText, newPageNumber: 1)
         })
-        
-//        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
-//        button.backgroundColor = .green
-//        button.setTitle("Test Button", for: .normal)
-//        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-//        
-//        self.view.addSubview(button)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -110,10 +111,13 @@ class FlickrSearchViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         resizeSearchBar()
+        // collection view
         self.collectionView.frame = self.view.frame
 //        self.collectionView.collectionViewLayout.invalidateLayout()
         self.collectionView.performBatchUpdates(nil, completion: nil)
         self.collectionView.reloadData()  // TODO: Enable if image cells don't reload properly
+        // loader
+        self.activityIndicator.frame = CGRect(x: self.view.frame.midX - ActivityIndicatorSize.width/2.0, y: self.view.frame.midY - ActivityIndicatorSize.height/2.0, width: ActivityIndicatorSize.width, height: ActivityIndicatorSize.height)
     }
     
     fileprivate func resizeSearchBar() {
@@ -185,9 +189,12 @@ class FlickrSearchViewController: UIViewController {
                     assertionFailure("Page loaded that neither goes before or after already loaded pages")
                     return
                 }
+                self?.activityIndicator.stopAnimating()
                 self?.collectionView.reloadData()
             } else {
-                print(errorMessage)
+                let alert = UIAlertController(title: "Error", message: errorMessage, preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                self?.present(alert, animated: true, completion: nil)
             }
         })
     }
@@ -342,6 +349,16 @@ extension FlickrSearchViewController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if self.searchResults.count > 0 {
+            // This is a new search
+            // Clear old search
+            self.searchResults.removeAll()
+            self.collectionView.reloadData()
+        }
+        guard !searchText.isEmpty else {
+            return
+        }
+        self.activityIndicator.startAnimating()
         debouncedSearch()
     }
     

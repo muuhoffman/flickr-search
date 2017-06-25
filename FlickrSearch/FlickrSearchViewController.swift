@@ -43,7 +43,7 @@ class FlickrSearchViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.title = navBarTitle
-        self.view.backgroundColor = Constants.Color.SearchViewControllerBackground
+        self.view.backgroundColor = UIColor.white
         
         self.collectionView = ({
             let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -58,7 +58,6 @@ class FlickrSearchViewController: UIViewController {
             
             return collectionView
         })()
-        
         self.view.addSubview(self.collectionView)
         
         // search button
@@ -98,9 +97,10 @@ class FlickrSearchViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(notification:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+        // reload b/c images could be favorited in the image detail view
+        self.collectionView.reloadData()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -229,11 +229,11 @@ extension FlickrSearchViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReuseIdentifier.flickrCell,
                                                       for: indexPath) as! FlickrCollectionViewCell
         
-        switch indexPath.row % itemsPerRow {
+        switch indexPath.row % 2 {
         case 0:
-            cell.backgroundColor = UIColor.blue
+            cell.backgroundColor = Constants.Color.blue
         default:
-            cell.backgroundColor = UIColor.red
+            cell.backgroundColor = Constants.Color.pink
         }
         cell.setNewContent(content: self.searchResults[indexPath.row])
         

@@ -12,6 +12,9 @@ import UIKit
 struct Constants {
     struct Color {
         static let SearchViewControllerBackground = UIColor.yellow
+        static let pink = UIColor(red: 250, green: 0, blue: 124, alpha: 1)
+        static let blue = UIColor(rgb: 0x0061D4)
+        static let black = UIColor(red: 32, green: 32, blue: 35, alpha: 1)
     }
     
     struct Device {
@@ -46,6 +49,6 @@ struct Constants {
     struct Flickr {
         static var apiKey = ""
         static var apiSecret = ""
-        static let resultsPerPage = 2
+        static let resultsPerPage = 20
     }
 }

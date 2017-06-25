@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         extractAndSetFlickrApiKey()
         initRootViewController()
+        self.window?.tintColor = Constants.Color.blue
         
         return true
     }

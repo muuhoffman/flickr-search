@@ -19,6 +19,7 @@
 		7655275A1EFC1127000F5D72 /* Configuration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 765527591EFC1127000F5D72 /* Configuration.plist */; };
 		7655275C1EFC17B0000F5D72 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7655275B1EFC17B0000F5D72 /* Model.swift */; };
 		7655275E1EFF1C9F000F5D72 /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7655275D1EFF1C9F000F5D72 /* ImageDetailViewController.swift */; };
+		765527601EFF251F000F5D72 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7655275F1EFF251F000F5D72 /* UIImageExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		765527591EFC1127000F5D72 /* Configuration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Configuration.plist; sourceTree = "<group>"; };
 		7655275B1EFC17B0000F5D72 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		7655275D1EFF1C9F000F5D72 /* ImageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
+		7655275F1EFF251F000F5D72 /* UIImageExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 				7655275D1EFF1C9F000F5D72 /* ImageDetailViewController.swift */,
 				765470A61EFAB80700ED20B7 /* FlickrCollectionViewCell.swift */,
 				7654707D1EF969BE00ED20B7 /* Assets.xcassets */,
+				7655275F1EFF251F000F5D72 /* UIImageExtension.swift */,
 				7654707F1EF969BE00ED20B7 /* LaunchScreen.storyboard */,
 				765470821EF969BE00ED20B7 /* Info.plist */,
 				765470A41EF96EC300ED20B7 /* Constants.swift */,
@@ -284,6 +287,7 @@
 				7655275C1EFC17B0000F5D72 /* Model.swift in Sources */,
 				765470A51EF96EC300ED20B7 /* Constants.swift in Sources */,
 				765470A71EFAB80700ED20B7 /* FlickrCollectionViewCell.swift in Sources */,
+				765527601EFF251F000F5D72 /* UIImageExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -24,8 +24,13 @@ class NetworkService {
             dataTask = defaultSession.dataTask(with: url) { data, response, error in
                 defer { self.dataTask = nil }
                 if let error = error {
-                    DispatchQueue.main.async {
-                        completion(nil, "DataTask error: " + error.localizedDescription + "\n")
+                    if error._code == -999 {
+                        // cancelled: do nothing
+                        print("Data task cancelled")
+                    } else {
+                        DispatchQueue.main.async {
+                            completion(nil, "DataTask error: " + error.localizedDescription + "\n")
+                        }
                     }
                 } else if let data = data,
                     let response = response as? HTTPURLResponse,
